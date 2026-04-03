@@ -39,6 +39,8 @@ jobs:
         # We inject the Secret here so Next.js can see it during the build
         env:
           NEXT_PUBLIC_BUILDER_API_KEY: ${{ secrets.NEXT_PUBLIC_BUILDER_API_KEY }}
+          PLASMIC_PROJECT_ID: ${{ secrets.PLASMIC_PROJECT_ID }}
+          PLASMIC_PROJECT_API_TOKEN: ${{ secrets.PLASMIC_PROJECT_API_TOKEN }}
         run: npm run build
 
       - name: Upload artifact
