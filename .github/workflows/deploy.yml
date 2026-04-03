@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
   repository_dispatch:
-    types: [builder_publish] # This lets Builder.io trigger a build!
+    types: [builder_publish]
 
 permissions:
   contents: read
@@ -16,16 +16,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "22" # <--- ENSURE THIS IS 22
           cache: 'npm'
-      - run: npm install
-      - run: npm run build
+
+      - name: Install dependencies
+        # The --engine-strict=false flag helps if the environment is picky
+        run: npm install --engine-strict=false
+
+      - name: Build Next.js
+        run: npm run build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out # This is where Next.js puts your index.html
+          path: ./out
 
   deploy:
     needs: build
