@@ -22,7 +22,7 @@ export default async function PlasmicPage(props: { params: Promise<{ catchall?: 
 
   return (
     <PlasmicRootProvider loader={PLASMIC} prefetchedData={plasmicData}>
-      <PlasmicComponent component={plasmicData.entryCompMetadatas[0].name} />
+      <PlasmicComponent component={plasmicData.entryCompMetas[0].name} />
     </PlasmicRootProvider>
   );
 }
