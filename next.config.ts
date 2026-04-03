@@ -2,7 +2,7 @@ import BuilderDevTools from "@builder.io/dev-tools/next";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = BuilderDevTools()({
-  //output: "export",
+  output: "export",
   images: {
     unoptimized: true,
   },
