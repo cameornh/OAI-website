@@ -22,8 +22,11 @@ export async function generateStaticParams() {
 }
 
 export default async function Page(props: PageProps) {
-  const params = await props.params;
-  const urlPath = "/" + (params?.page?.join("/") || "");
+  // Inside your Page function:
+const params = await props.params;
+
+// This ensures we only send the "clean" path to Builder (e.g., "/about" instead of "/OAI-website/about")
+const urlPath = "/" + (params?.page?.join("/") || "");
 
   // For homepage, render the OAI landing page with header and video hero
   if (urlPath === "/") {
