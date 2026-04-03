@@ -26,7 +26,7 @@ export default async function PlasmicPage(props: { params: Promise<{ catchall?: 
     </PlasmicRootProvider>
   );
 }
-
+ 
 // Ensure the homepage is pre-rendered for GitHub Pages
 export async function generateStaticParams() {
   return [{ catchall: [] }];
