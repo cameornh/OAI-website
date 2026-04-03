@@ -1,5 +1,5 @@
 import { PLASMIC } from "@/plasmic-init";
-import PlasmicClientRoot from "@/components/plasmic-client-root";
+import { PlasmicComponent, PlasmicRootProvider } from "@plasmicapp/loader-nextjs";
 import { notFound } from "next/navigation";
 
 export default async function PlasmicPage(props: { params: Promise<{ catchall?: string[] }> }) {
@@ -12,15 +12,21 @@ export default async function PlasmicPage(props: { params: Promise<{ catchall?: 
   }
   const path = "/" + pathSegments.join("/");
 
-  // 2. Fetch data ON THE SERVER
+  // 2. Fetch data (Server Side)
   const plasmicData = await PLASMIC.maybeFetchComponentData(path);
 
   if (!plasmicData) {
     return notFound();
   }
 
-  // 3. Pass that data to the CLIENT component for rendering
-  return <PlasmicClientRoot plasmicData={plasmicData} />;
+  // 3. Render directly here. 
+  // Because this is a Server Component, we don't need a separate "use client" wrapper
+  // unless you have complex interactive state-driven components.
+  return (
+    <PlasmicRootProvider loader={PLASMIC} prefetchedData={plasmicData}>
+      <PlasmicComponent component={plasmicData.entryCompMetas[0].name} />
+    </PlasmicRootProvider>
+  );
 }
 
 export async function generateStaticParams() {
