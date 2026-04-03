@@ -2,6 +2,7 @@ import { builder } from "@builder.io/sdk";
 import { RenderBuilderContent } from "../../components/builder";
 import OAILanding from "../../components/oai-landing";
 import OAIHeader from "../../components/oai-header";
+import OAIHeroVideo from "../../components/oai-hero-video";
 
 // Initialize with your API Key
 builder.init(process.env.NEXT_PUBLIC_BUILDER_API_KEY!);
@@ -24,11 +25,12 @@ export default async function Page(props: PageProps) {
   const params = await props.params;
   const urlPath = "/" + (params?.page?.join("/") || "");
 
-  // For homepage, render the OAI landing page with header
+  // For homepage, render the OAI landing page with header and video hero
   if (urlPath === "/") {
     return (
       <>
         <OAIHeader />
+        <OAIHeroVideo />
         <OAILanding />
       </>
     );
