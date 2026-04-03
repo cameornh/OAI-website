@@ -1,14 +1,20 @@
 import BuilderDevTools from "@builder.io/dev-tools/next";
 import type { NextConfig } from "next";
 
-const repoName = "/OAI-website"; 
+// Check if we are on GitHub Actions or running 'npm run build'
+const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = BuilderDevTools()({
-  /* Tell Next.js we are serving from a subfolder */
-  basePath: repoName,
-  
-  /* Essential for GitHub Pages */
-  output: "export",
+  /* 
+     ONLY use "export" when building for GitHub. 
+     This allows 'npm run dev' to be flexible and stop crashing.
+  */
+  output: isProd ? "export" : undefined, 
+
+  /* Only use the subfolder prefix on GitHub */
+  basePath: isProd ? "/OAI-website" : "",
+  assetPrefix: isProd ? "/OAI-website" : "",
+
   images: {
     unoptimized: true,
   },

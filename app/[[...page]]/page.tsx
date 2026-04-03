@@ -14,17 +14,14 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return [
-    { page: [] }, 
-  ];
+  // This tells the production build to at least create the index.html
+  return [{ page: [] }];
 }
 
 export default async function Page(props: PageProps) {
   const params = await props.params;
 
-  // 1. CLEAN THE PATH: 
-  // If the URL is /OAI-website/about, params.page is ["OAI-website", "about"].
-  // We need to remove "OAI-website" so Builder just sees "/about".
+  // This logic works for BOTH local (root) and GitHub (subfolder)
   let pathSegments = params?.page || [];
   if (pathSegments[0] === "OAI-website") {
     pathSegments = pathSegments.slice(1);
@@ -32,31 +29,22 @@ export default async function Page(props: PageProps) {
 
   const urlPath = "/" + (pathSegments.join("/") || "");
 
-  // 2. GET CONTENT FROM BUILDER
   const builderContent = await builder
     .get("page", {
-      userAttributes: {
-        urlPath: urlPath,
-      },
+      userAttributes: { urlPath: urlPath },
       includeUnpublished: true,
     })
     .toPromise();
 
-  // 3. LOGIC FOR HOMEPAGE
-  // If Builder has content for this page, show it! 
-  // This allows your collaborator to edit the homepage.
   if (builderContent) {
     return (
       <>
-        {/* You can keep your Header here so it's on every page */}
         <OAIHeader /> 
         <RenderBuilderContent content={builderContent} model="page" />
       </>
     );
   }
 
-  // 4. FALLBACK:
-  // If Builder is empty and it's the homepage, show your original hardcoded components.
   if (urlPath === "/") {
     return (
       <>
@@ -67,6 +55,5 @@ export default async function Page(props: PageProps) {
     );
   }
 
-  // 5. If truly nothing exists, RenderBuilderContent will show a 404
   return <RenderBuilderContent content={builderContent} model="page" />;
 }
