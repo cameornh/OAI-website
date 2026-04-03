@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
   push:
-    branches: ["main, plasmic"]
+    branches: ["main", "plasmic"]
   # This allows Builder.io to trigger a build via webhook
   repository_dispatch:
     types: ["*"]
@@ -42,7 +42,7 @@ jobs:
           PLASMIC_PROJECT_ID: ${{ secrets.PLASMIC_PROJECT_ID }}
           PLASMIC_PROJECT_API_TOKEN: ${{ secrets.PLASMIC_PROJECT_API_TOKEN }}
           # If you have a basePath in next.config.ts, Next.js needs to know it's production
-          # NODE_ENV: production 
+          NODE_ENV: production 
         run: npm run build
 
       - name: Upload artifact
