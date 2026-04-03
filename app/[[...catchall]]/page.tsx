@@ -1,30 +1,30 @@
 import { PLASMIC } from "@/plasmic-init";
-import { PlasmicComponent, PlasmicRootProvider } from "@plasmicapp/loader-nextjs";
+import PlasmicClientRenderer from "@/components/PlasmicClientRenderer";
 import { notFound } from "next/navigation";
 
 export default async function PlasmicPage(props: { params: Promise<{ catchall?: string[] }> }) {
   const params = await props.params;
   
+  // 1. Handle GitHub Pages subfolder
   let pathSegments = params.catchall || [];
   if (pathSegments[0] === "OAI-website") {
     pathSegments = pathSegments.slice(1);
   }
   const path = "/" + pathSegments.join("/");
 
+  // 2. Fetch data on the Server
   const plasmicData = await PLASMIC.maybeFetchComponentData(path);
 
   if (!plasmicData) {
     return notFound();
   }
 
-  const componentName = plasmicData.entryCompMetas[0].name;
-
+  // 3. Pass data to the Client Renderer
   return (
-    // We pass the data here - the 'transpilePackages' fix in next.config 
-    // ensures this doesn't crash the server build anymore.
-    <PlasmicRootProvider loader={PLASMIC} prefetchedData={plasmicData}>
-      <PlasmicComponent component={componentName} />
-    </PlasmicRootProvider>
+    <PlasmicClientRenderer 
+      plasmicData={plasmicData} 
+      componentName={plasmicData.entryCompMetas[0].name} 
+    />
   );
 }
 

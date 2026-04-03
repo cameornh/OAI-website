@@ -3,10 +3,10 @@ import type { NextConfig } from "next";
 const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = {
-  // 1. THIS IS THE FIX: Tell Next.js to process Plasmic's code specifically
+  // Force Next.js to handle Plasmic's specific module structure
   transpilePackages: ["@plasmicapp/loader-nextjs", "@plasmicapp/react"],
 
-  output: isProd ? "export" : undefined, 
+  output: isProd ? "export" : undefined,
   basePath: isProd ? "/OAI-website" : "",
   assetPrefix: isProd ? "/OAI-website" : "",
   images: {
