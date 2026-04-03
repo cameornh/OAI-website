@@ -3,8 +3,10 @@ name: Deploy Next.js to Pages
 on:
   push:
     branches: ["main"]
+  # This will trigger on ANY repository dispatch, 
+  # even if Builder doesn't send the "event_type" correctly.
   repository_dispatch:
-    types: [builder_publish]
+    types: ["*"]
 
 permissions:
   contents: read
