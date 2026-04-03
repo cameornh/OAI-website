@@ -1,30 +1,38 @@
 import { builder } from "@builder.io/sdk";
 import { RenderBuilderContent } from "../../components/builder";
 
-// Replace with your Public API Key from Builder.io
+// Initialize with your API Key
 builder.init(process.env.NEXT_PUBLIC_BUILDER_API_KEY!);
 
 interface PageProps {
   params: Promise<{
-    page: string[];
+    page?: string[];
   }>;
+}
+
+// 1. This function tells Next.js which paths to pre-render.
+// For now, we tell it to at least render the homepage (empty array).
+export async function generateStaticParams() {
+  return [
+    { page: [] }, // The homepage
+  ];
 }
 
 export default async function Page(props: PageProps) {
   const params = await props.params;
+  const urlPath = "/" + (params?.page?.join("/") || "");
+
   const builderContent = await builder
     .get("page", {
       userAttributes: {
-        urlPath: "/" + (params?.page?.join("/") || ""),
+        urlPath: urlPath,
       },
-      // Set to true to include unpublished content for previewing
       includeUnpublished: true,
     })
     .toPromise();
 
   return (
     <>
-      {/* Render the Builder page content */}
       <RenderBuilderContent content={builderContent} model="page" />
     </>
   );
