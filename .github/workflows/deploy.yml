@@ -1,17 +1,24 @@
-name: Deploy Next.js to Pages
+name: Build and Deploy
 
 on:
   push:
     branches: ["main"]
-  # This will trigger on ANY repository dispatch, 
-  # even if Builder doesn't send the "event_type" correctly.
+  # This allows Builder.io to trigger a build via webhook
   repository_dispatch:
     types: ["*"]
+  # This allows you to manually trigger a build from the Actions tab
+  workflow_dispatch: 
 
 permissions:
   contents: read
   pages: write
   id-token: write
+
+# This ensures only one build runs at a time. 
+# If you push twice, it cancels the first one to save time.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -22,14 +29,16 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22" # <--- ENSURE THIS IS 22
+          node-version: "22"
           cache: 'npm'
 
       - name: Install dependencies
-        # The --engine-strict=false flag helps if the environment is picky
         run: npm install --engine-strict=false
 
       - name: Build Next.js
+        # We inject the Secret here so Next.js can see it during the build
+        env:
+          NEXT_PUBLIC_BUILDER_API_KEY: ${{ secrets.NEXT_PUBLIC_BUILDER_API_KEY }}
         run: npm run build
 
       - name: Upload artifact
